@@ -7,10 +7,22 @@ $(document).ready(function(){
 
 
 //ler do local storage aqui
+
 let candidatos = [
   { id: "1", cpf: "42604610876", nome: "Lucas Vieira Dias", celular: "11957770782", email: "lvdias98@gmail.com", sexo: "Masculino", nascimento: "01/12/1998", skills: { html: true, css: true, js: true } },
   { id: "2", cpf: "42604610876", nome: "Nelson Santana", celular: "11957770782", email: "lvdias98@gmail.com", sexo: "Masculino", nascimento: "01/12/1998", skills: { html: true, css: true, js: true } },
 ];
+
+$(document).ready(function validarLocalStorage(){
+  if (localStorage.length > 0){
+    let localCandidatos = JSON.parse(localStorage.getItem("todosCandidatos"))
+    console.log(localCandidatos)
+    candidatos = localCandidatos
+    listarCandidatos()
+  } else{
+    localStorage.setItem("todosCandidatos", JSON.stringify(candidatos))
+  }
+} )
 
 
 function abrirModal(candidato) {
@@ -101,7 +113,7 @@ function salvar() {
   }
 
   //salvar a lista de canditatos atualizada no local storage
-  
+  localStorage.setItem("todosCandidatos", JSON.stringify(candidatos))
 
   fecharModal();
   listarCandidatos();
