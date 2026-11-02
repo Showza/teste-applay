@@ -1,8 +1,17 @@
+//Máscara para o CPF e celular
+$(document).ready(function(){
+  $('#cpf').mask('000.000.000-00');
+  $('#celular').mask('(00) 00000-0000');
+})
+
+
+
 //ler do local storage aqui
 let candidatos = [
   { id: "1", cpf: "42604610876", nome: "Lucas Vieira Dias", celular: "11957770782", email: "lvdias98@gmail.com", sexo: "Masculino", nascimento: "01/12/1998", skills: { html: true, css: true, js: true } },
   { id: "2", cpf: "42604610876", nome: "Nelson Santana", celular: "11957770782", email: "lvdias98@gmail.com", sexo: "Masculino", nascimento: "01/12/1998", skills: { html: true, css: true, js: true } },
 ];
+
 
 function abrirModal(candidato) {
   if (candidato) {
@@ -116,16 +125,18 @@ function listarCandidatos() {
     let colunaRemover = document.createElement("td");
 
     // Funcionalidades botão editar
-    let botaoEditar = document.createElement("button");
-    botaoEditar.innerHTML = 'Editar';
+    let botaoEditar = document.createElement("a");
+    botaoEditar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+    botaoEditar.id = 'botaoEditar'
     botaoEditar.onclick = function () {
       console.log('editar');
       abrirModal(candidato);
     }
 
     // Funcionalidades botão remover
-    let botaoRemover = document.createElement("button");
-    botaoRemover.innerHTML = 'Remover';
+    let botaoRemover = document.createElement("a");
+    botaoRemover.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+    botaoRemover.id = 'botaoRemover'
     botaoRemover.onclick = function () {
       alert('Erro ao remover!');
     }

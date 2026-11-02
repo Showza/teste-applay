@@ -3,8 +3,56 @@
   margin: 0;
 }
 
+:root{
+  --cor-primaria: #00C795;
+  --cor-secundaria: #09242C;
+  --cor-terciaria: #7ACAE6;
+}
+
 .main {
-  
+  margin-top: 32px;
+}
+
+#search{
+  border-radius: 5px;
+  border: 1px solid var(--cor-secundaria);
+  padding: 5px;
+}
+
+#novoCandidadoButton{
+  padding: 5px;
+  color: white;
+  background-color: var(--cor-secundaria);
+  border: 1px solid var(--cor-secundaria);
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+#novoCandidadoButton:hover{
+  color: var(--cor-primaria);
+  background-color: var(--cor-secundaria);
+  border: 1px solid var(--cor-primaria);
+  transition: 0.3s;
+}
+
+#botaoEditar{
+  font-size: 20px;
+  color: var(--cor-secundaria);
+  padding-left: 10px;
+  transition: 0.3s;
+}
+
+#botaoRemover{
+  font-size: 20px;
+  color: var(--cor-secundaria);
+  padding-left: 20px;
+  transition: 0.3s;
+}
+
+#botaoEditar:hover, #botaoRemover:hover{
+  cursor: pointer;
+  color: var(--cor-primaria);
+  transition: 0.3s;
 }
 
 .main table {
@@ -13,4 +61,20 @@
 
 .main table thead {
   font-weight: bold;
+}
+
+#candidatos{
+  border: 1px solid var(--cor-secundaria);
+}
+
+#candidatos thead{
+  border: 1px solid var(--cor-secundaria);
+}
+
+td{
+  padding: 10px 10px
+}
+
+#table-body tr:nth-child(odd){
+  background-color: lightgray;
 }
