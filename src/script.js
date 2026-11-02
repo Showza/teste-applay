@@ -20,6 +20,7 @@ function abrirModal(candidato) {
     document.getElementById("skillHtml").checked = candidato.skills.html;
     document.getElementById("skillCss").checked = candidato.skills.css;
     document.getElementById("skillJs").checked = candidato.skills.js;
+    document.getElementById("skillBoot").checked = candidato.skills.boot;
   }
 
   $('#candidatoModal').modal('show');
@@ -41,6 +42,7 @@ function fecharModal() {
   document.getElementById("skillHtml").checked = false;
   document.getElementById("skillCss").checked = false;
   document.getElementById("skillJs").checked = false;
+  document.getElementById("skillBoot").checked = false;
 }
 
 function salvar() {
@@ -54,6 +56,7 @@ function salvar() {
   let skillHtml = document.getElementById("skillHtml").checked;
   let skillCss = document.getElementById("skillCss").checked;
   let skillJs = document.getElementById("skillJs").checked;
+  let skillBoot = document.getElementById("skillBoot").checked;
 
   // Fazer validações aqui
 
@@ -70,7 +73,8 @@ function salvar() {
     skills: {
       html: skillHtml,
       css: skillCss,
-      js: skillJs
+      js: skillJs,
+      bootstrap: skillBoot
     }
   };
 
@@ -135,6 +139,10 @@ function listarCandidatos() {
     }
     if(candidato.skills.js){
       arrSkills.push('JS');
+    }
+
+    if(candidato.skills.bootstrap){
+      arrSkills.push('BootStrap');
     }
 
     colunaCpf.appendChild(document.createTextNode(candidato.cpf));
