@@ -3,10 +3,7 @@ $(document).ready(function () {
   $('#cpf').mask('000.000.000-00');
   $('#celular').mask('(00) 00000-0000');
 })
-//Limpa o localStorage caso não tenha nada salvo nele
-if (localStorage.length > 0){
-  localStorage.clear();
-}
+
 //ler do local storage aqui
 let candidatos = [
   /*{ id: "1", cpf: "42604610876", nome: "Lucas Vieira Dias", celular: "11957770782", email: "lvdias98@gmail.com", sexo: "Masculino", nascimento: "01/12/1998", skills: { html: true, css: true, js: true } },
@@ -40,7 +37,7 @@ function abrirModal(candidato) {
     document.getElementById("skillHtml").checked = candidato.skills.html;
     document.getElementById("skillCss").checked = candidato.skills.css;
     document.getElementById("skillJs").checked = candidato.skills.js;
-    document.getElementById("skillBoot").checked = candidato.skills.boot;
+    document.getElementById("skillBoot").checked = candidato.skills.bootstrap;
   }
 
   $('#candidatoModal').modal('show');
@@ -191,7 +188,6 @@ function listarCandidatos() {
     botaoEditar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
     botaoEditar.id = 'botaoEditar'
     botaoEditar.onclick = function () {
-      console.log('editar');
       abrirModal(candidato);
     }
 
