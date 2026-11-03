@@ -13,7 +13,6 @@ let candidatos = [
 $(document).ready(function validarLocalStorage() {
   if (localStorage.length > 0) {
     let localCandidatos = JSON.parse(localStorage.getItem("todosCandidatos"))
-    console.log(localCandidatos)
     candidatos = localCandidatos
     listarCandidatos()
   } else {
@@ -76,30 +75,129 @@ function salvar() {
   let skillJs = document.getElementById("skillJs").checked;
   let skillBoot = document.getElementById("skillBoot").checked;
 
-  // Fazer validações aqui
+  let inputs = document.querySelectorAll('.inputObriga')
+  if (checkInputs(inputs)) {
+    let candidato = {
+      id: id != '' ? id : new Date().getTime(),
+      cpf: cpf,
+      nome: nome,
+      celular: celular,
+      email: email,
+      sexo: sexo ? 'Masculino' : 'Feminino',
+      nascimento: nascimento,
+      skills: {
+        html: skillHtml,
+        css: skillCss,
+        js: skillJs,
+        bootstrap: skillBoot
+      }
+    };
 
-  if (validarCPF(cpf) == true) {
-    let localCPF = JSON.parse(localStorage.getItem('todosCandidatos'))
-    if (localCPF.some(e => e.cpf === cpf)) {
-      window.alert('O CPF digitado já está cadastrado, tente novamente.')
+    if (id != '') {
+      let checkCandidato = candidatos.find(e => e.id == candidato.id);
+      checkCandidato.cpf = candidato.cpf;
+      checkCandidato.nome = candidato.nome;
+      checkCandidato.celular = candidato.celular;
+      checkCandidato.email = candidato.email;
+      checkCandidato.sexo = candidato.sexo;
+      checkCandidato.nascimento = candidato.nascimento;
+      checkCandidato.skills = candidato.skills;
     } else {
-      console.log('CPF não registrado, pode prosseguir.')
-      
-      function validarNome (){
-        let nomeArray = nome.split(' ');
-        return nomeArray.length >= 2;
-      }
+      candidatos.push(candidato);
+    }
 
-      if(validarNome(nome)){
-        window.alert('Nome completo')
-        let idade = nascimento
+    //salvar a lista de canditatos atualizada no local storage
+    localStorage.setItem("todosCandidatos", JSON.stringify(candidatos))
 
-      } else{
-        window.alert('Nome incompleto')
+    fecharModal();
+    listarCandidatos();
+  } else {
+    //Valida se o CPF é válido
+    if (validarCPF(cpf) == true) {
+
+      //Valida se o CPF já existe no localStorage
+      let localCPF = JSON.parse(localStorage.getItem('todosCandidatos'))
+      if (localCPF.some(e => e.cpf === cpf)) {
+        window.alert('O CPF digitado já está cadastrado.')
+      } else {
+
+        //Separa o que foi digitado no campo "Nome" com um espaço e retorna "true" caso tenha pelo menos 2 palavras
+        function validarNome() {
+          let nomeArray = nome.split(' ');
+          return nomeArray.length >= 2;
+        }
+
+        if (validarNome(nome)) {
+          //Pega a data inserida, ainda no padrão YYYY/MM/DD e valida se o candidato tem mais de 17 anos e menos de 100
+          let dataNiver = document.getElementById('nascimento').value
+          let idade = getAge(dataNiver);
+
+          if (idade >= 17 && idade <= 100) {
+            let checkboxs = document.querySelectorAll('input[type="checkbox"]')
+            //Verifica se ao menos 1 checkbox foi selecionado.
+            let i = 0;
+            let checkboxMarcado = false;
+
+            while (i < checkboxs.length) {
+              if (checkboxs[i].checked === true) {
+                checkboxMarcado = true;
+                break;
+              }
+              i++
+            }
+            if (!checkboxMarcado) {
+              window.alert('Selecione ao menos uma habilidade.')
+            } else {
+              let candidato = {
+                id: id != '' ? id : new Date().getTime(),
+                cpf: cpf,
+                nome: nome,
+                celular: celular,
+                email: email,
+                sexo: sexo ? 'Masculino' : 'Feminino',
+                nascimento: nascimento,
+                skills: {
+                  html: skillHtml,
+                  css: skillCss,
+                  js: skillJs,
+                  bootstrap: skillBoot
+                }
+              };
+
+              if (id != '') {
+                let checkCandidato = candidatos.find(e => e.id == candidato.id);
+                checkCandidato.cpf = candidato.cpf;
+                checkCandidato.nome = candidato.nome;
+                checkCandidato.celular = candidato.celular;
+                checkCandidato.email = candidato.email;
+                checkCandidato.sexo = candidato.sexo;
+                checkCandidato.nascimento = candidato.nascimento;
+                checkCandidato.skills = candidato.skills;
+              } else {
+                candidatos.push(candidato);
+              }
+
+              //salvar a lista de canditatos atualizada no local storage
+              localStorage.setItem("todosCandidatos", JSON.stringify(candidatos))
+
+              fecharModal();
+              listarCandidatos();
+            }
+
+          } else {
+            window.alert('Sua idade não é permitida.')
+          }
+
+        } else {
+          window.alert('Digite seu nome e sobrenome.')
+        }
       }
+    } else {
+      window.alert('Digite um CPF válido.')
     }
   }
 }
+
 
 function listarCandidatos() {
   let tabela = document.getElementById("table-body");
@@ -232,6 +330,33 @@ function validarCPF(cpf) {
   return segundoDigito === Number(cpf[10]);
 }
 
+//Validar a idade digitada
+function getAge(dateString) {
+
+  const today = new Date();
+  const birthDate = new Date(dateString);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age;
+}
+
+//Validar se os inputs foram preenchidos
+function checkInputs(inputs) {
+  let filled = true;
+  inputs.forEach(function (input) {
+    if (input.value === "") {
+      filled = false;
+    }
+  });
+  return filled;
+}
+
+//Código base Lucas
 /* let candidato = {
         id: id != '' ? id : new Date().getTime(),
         cpf: cpf,
@@ -266,3 +391,98 @@ function validarCPF(cpf) {
 
       fecharModal();
       listarCandidatos(); */
+
+/*
+// VALIDAÇÕES
+
+//Fazer as validações aqui
+  let inputs = document.querySelectorAll('.inputObriga')
+  //Verifica se os inputs (nome, email, celular...) foram preenchidos
+  if (checkInputs(inputs)) {
+    //Valida se o CPF é válido
+    if (validarCPF(cpf) == true) {
+
+      //Valida se o CPF já existe no localStorage
+      let localCPF = JSON.parse(localStorage.getItem('todosCandidatos'))
+      if (localCPF.some(e => e.cpf === cpf)) {
+        window.alert('O CPF digitado já está cadastrado.')
+      } else {
+
+        //Separa o que foi digitado no campo "Nome" com um espaço e retorna "true" caso tenha pelo menos 2 palavras
+        function validarNome() {
+          let nomeArray = nome.split(' ');
+          return nomeArray.length >= 2;
+        }
+
+        if (validarNome(nome)) {
+          //Pega a data inserida, ainda no padrão YYYY/MM/DD e valida se o candidato tem mais de 17 anos e menos de 100
+          let dataNiver = document.getElementById('nascimento').value
+          let idade = getAge(dataNiver);
+
+          if (idade >= 17 && idade <= 100) {
+            let checkboxs = document.querySelectorAll('input[type="checkbox"]')
+            //Verifica se ao menos 1 checkbox foi selecionado.
+            let i = 0;
+            let checkboxMarcado = false;
+
+            while (i < checkboxs.length) {
+              if (checkboxs[i].checked === true) {
+                checkboxMarcado = true;
+                break;
+              }
+              i++
+            }
+            if (!checkboxMarcado) {
+              window.alert('Selecione ao menos uma habilidade.')
+            } else {
+              let candidato = {
+                id: id != '' ? id : new Date().getTime(),
+                cpf: cpf,
+                nome: nome,
+                celular: celular,
+                email: email,
+                sexo: sexo ? 'Masculino' : 'Feminino',
+                nascimento: nascimento,
+                skills: {
+                  html: skillHtml,
+                  css: skillCss,
+                  js: skillJs,
+                  bootstrap: skillBoot
+                }
+              };
+
+              if (id != '') {
+                let checkCandidato = candidatos.find(e => e.id == candidato.id);
+                checkCandidato.cpf = candidato.cpf;
+                checkCandidato.nome = candidato.nome;
+                checkCandidato.celular = candidato.celular;
+                checkCandidato.email = candidato.email;
+                checkCandidato.sexo = candidato.sexo;
+                checkCandidato.nascimento = candidato.nascimento;
+                checkCandidato.skills = candidato.skills;
+              } else {
+                candidatos.push(candidato);
+              }
+
+              //salvar a lista de canditatos atualizada no local storage
+              localStorage.setItem("todosCandidatos", JSON.stringify(candidatos))
+
+              fecharModal();
+              listarCandidatos();
+            }
+
+          } else {
+            window.alert('Sua idade não é permitida.')
+          }
+
+        } else {
+          window.alert('Digite seu nome e sobrenome.')
+        }
+      }
+    } else {
+      window.alert('Digite um CPF válido.')
+    }
+  } else {
+    window.alert('Preencha todos os campos.')
+  }
+} */
