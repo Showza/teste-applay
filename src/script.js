@@ -20,7 +20,6 @@ $(document).ready(function validarLocalStorage() {
   }
 })
 
-
 function abrirModal(candidato) {
   if (candidato) {
     document.getElementById("id").value = candidato.id;
@@ -91,22 +90,65 @@ function salvar() {
     }
   };
 
+  //Pega todos os inputs obrigatórios para que sejam usados futuramente na validação
+  let inputs = document.querySelectorAll('.inputObriga')
+
+  //Pega a data de nascimento inserida, ainda no padrão YYYY/MM/DD
+  let dataNiver = document.getElementById('nascimento').value
+  let idade = getAge(dataNiver);
+
+  //Pega todos os checkboxs para futura validação se temos ao menos um checado.
+  let checkboxs = document.querySelectorAll('input[type="checkbox"]')
+  let i = 0;
+  let checkboxMarcado = false;
+
   //Edição do candidato
   if (id != '') {
-    let checkCandidato = candidatos.find(e => e.id == candidato.id);
-    checkCandidato.cpf = candidato.cpf;
-    checkCandidato.nome = candidato.nome;
-    checkCandidato.celular = candidato.celular;
-    checkCandidato.email = candidato.email;
-    checkCandidato.sexo = candidato.sexo;
-    checkCandidato.nascimento = candidato.nascimento;
-    checkCandidato.skills = candidato.skills;
+    if (checkInputs(inputs)) {
+      if (validarCPF(cpf) == true) {
+        function validarNome() {
+          let nomeArray = nome.split(' ');
+          return nomeArray.length >= 2;
+        }
 
-    fecharModal();
-    listarCandidatos();
-  } else {
-    //Salvar um novo candidato
-    let inputs = document.querySelectorAll('.inputObriga')
+        if (validarNome(nome)) {
+          if (idade >= 17 && idade <= 100) {
+            while (i < checkboxs.length) {
+              if (checkboxs[i].checked === true) {
+                checkboxMarcado = true;
+                let checkCandidato = candidatos.find(e => e.id == candidato.id);
+                checkCandidato.cpf = candidato.cpf;
+                checkCandidato.nome = candidato.nome;
+                checkCandidato.celular = candidato.celular;
+                checkCandidato.email = candidato.email;
+                checkCandidato.sexo = candidato.sexo;
+                checkCandidato.nascimento = candidato.nascimento;
+                checkCandidato.skills = candidato.skills;
+
+                fecharModal();
+                listarCandidatos();
+                break
+              }
+              i++
+            }
+            if(!checkboxMarcado){
+              Swal.fire('Selecione ao menos uma habilidade.')
+            }
+
+          } else {
+            Swal.fire('Sua idade não é permitida.')
+          }
+        } else {
+          Swal.fire('Digite seu nome e sobrenome.')
+        }
+      } else {
+        Swal.fire('Digite um CPF válido.')
+      }
+    } else {
+      Swal.fire('Preencha todos os campos')
+    }
+
+  } else { //Salvar um novo candidato
     //Verifica se os inputs (nome, email, celular...) foram preenchidos
     if (checkInputs(inputs)) {
       //Valida o CPF
@@ -114,25 +156,15 @@ function salvar() {
         //Verifica se o CPF já existe no localStorage
         let localCPF = JSON.parse(localStorage.getItem('todosCandidatos'))
         if (localCPF.some(e => e.cpf === cpf)) {
-          window.alert('O CPF digitado já está cadastrado.')
+          Swal.fire('O CPF digitado já está cadastrado.')
         } else {
           //Separa o input recebido no "Nome" por espaços em uma array, retorna "True" caso tenha pelo menos 2 palavras
           function validarNome() {
             let nomeArray = nome.split(' ');
             return nomeArray.length >= 2;
           }
-
           if (validarNome(nome)) {
-            //Pega a data inserida, ainda no padrão YYYY/MM/DD e valida se o candidato tem mais de 17 anos e menos de 100
-            let dataNiver = document.getElementById('nascimento').value
-            let idade = getAge(dataNiver);
-
             if (idade >= 17 && idade <= 100) {
-              //Verifica se ao menos 1 checkbox foi selecionado.
-              let checkboxs = document.querySelectorAll('input[type="checkbox"]')
-              let i = 0;
-              let checkboxMarcado = false;
-
               while (i < checkboxs.length) {
                 if (checkboxs[i].checked === true) {
                   checkboxMarcado = true;
@@ -145,20 +177,20 @@ function salvar() {
                 i++
               }
               if (!checkboxMarcado) {
-                window.alert('Selecione ao menos uma habilidade.')
+                Swal.fire('Selecione ao menos uma habilidade.')
               }
             } else {
-              window.alert('Sua idade não é permitida.')
+              Swal.fire('Sua idade não é permitida.')
             }
           } else {
-            window.alert('Digite seu nome e sobrenome.')
+            Swal.fire('Digite seu nome e sobrenome.')
           }
         }
       } else {
-        window.alert('Digite um CPF válido.')
+        Swal.fire('Digite um CPF válido.')
       }
     } else {
-      window.alert('Preencha todos os campos.')
+      Swal.fire('Preencha todos os campos.')
     }
   }
 

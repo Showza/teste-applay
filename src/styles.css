@@ -71,8 +71,17 @@ td{
   padding: 10px 10px
 }
 
+/*Deixa as linhas ímpares da tabela com um fundo acizentado para melhor legibilidade*/
 #table-body tr:nth-child(odd){
   background-color: rgb(228, 228, 228);
+}
+
+.form-floating > label{
+  padding: 1rem 1.55rem;
+}
+
+p{
+  font-weight: 600;
 }
 
 #fechar{
