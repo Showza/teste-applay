@@ -116,22 +116,28 @@ function salvar() {
             while (i < checkboxs.length) {
               if (checkboxs[i].checked === true) {
                 checkboxMarcado = true;
-                let checkCandidato = candidatos.find(e => e.id == candidato.id);
-                checkCandidato.cpf = candidato.cpf;
-                checkCandidato.nome = candidato.nome;
-                checkCandidato.celular = candidato.celular;
-                checkCandidato.email = candidato.email;
-                checkCandidato.sexo = candidato.sexo;
-                checkCandidato.nascimento = candidato.nascimento;
-                checkCandidato.skills = candidato.skills;
+                //Valida se o CPF digitado já está na array e se o ID do candidato é diferente, dessa forma indicando que outro candidato já cadastrou esse CPF
+                if (candidatos.some(e => e.cpf === cpf && e.id != id)) {
+                  Swal.fire('Esse CPF já está cadastrado.')
+                } else {
+                  let checkCandidato = candidatos.find(e => e.id == candidato.id);
+                  checkCandidato.cpf = candidato.cpf;
+                  checkCandidato.nome = candidato.nome;
+                  checkCandidato.celular = candidato.celular;
+                  checkCandidato.email = candidato.email;
+                  checkCandidato.sexo = candidato.sexo;
+                  checkCandidato.nascimento = candidato.nascimento;
+                  checkCandidato.skills = candidato.skills;
 
-                fecharModal();
-                listarCandidatos();
-                break
+                  fecharModal();
+                  listarCandidatos();
+                  break
+                }
+                
               }
               i++
             }
-            if(!checkboxMarcado){
+            if (!checkboxMarcado) {
               Swal.fire('Selecione ao menos uma habilidade.')
             }
 
