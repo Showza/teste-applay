@@ -90,6 +90,7 @@ function salvar() {
     }
   };
 
+
   //Pega todos os inputs obrigatórios para que sejam usados futuramente na validação
   let inputs = document.querySelectorAll('.inputObriga')
 
@@ -112,38 +113,43 @@ function salvar() {
         }
 
         if (validarNome(nome)) {
-          if (idade >= 17 && idade <= 100) {
-            while (i < checkboxs.length) {
-              if (checkboxs[i].checked === true) {
-                checkboxMarcado = true;
-                //Valida se o CPF digitado já está na array e se o ID do candidato é diferente, dessa forma indicando que outro candidato já cadastrou esse CPF
-                if (candidatos.some(e => e.cpf === cpf && e.id != id)) {
-                  Swal.fire('Esse CPF já está cadastrado.')
-                } else {
-                  let checkCandidato = candidatos.find(e => e.id == candidato.id);
-                  checkCandidato.cpf = candidato.cpf;
-                  checkCandidato.nome = candidato.nome;
-                  checkCandidato.celular = candidato.celular;
-                  checkCandidato.email = candidato.email;
-                  checkCandidato.sexo = candidato.sexo;
-                  checkCandidato.nascimento = candidato.nascimento;
-                  checkCandidato.skills = candidato.skills;
+          if (validarEmail(email)) {
+            if (idade >= 17 && idade <= 100) {
+              while (i < checkboxs.length) {
+                if (checkboxs[i].checked === true) {
+                  checkboxMarcado = true;
+                  //Valida se o CPF digitado já está na array e se o ID do candidato é diferente, dessa forma indicando que outro candidato já cadastrou esse CPF
+                  if (candidatos.some(e => e.cpf === cpf && e.id != id)) {
+                    Swal.fire('Esse CPF já está cadastrado.')
+                  } else {
+                    let checkCandidato = candidatos.find(e => e.id == candidato.id);
+                    checkCandidato.cpf = candidato.cpf;
+                    checkCandidato.nome = candidato.nome;
+                    checkCandidato.celular = candidato.celular;
+                    checkCandidato.email = candidato.email;
+                    checkCandidato.sexo = candidato.sexo;
+                    checkCandidato.nascimento = candidato.nascimento;
+                    checkCandidato.skills = candidato.skills;
 
-                  fecharModal();
-                  listarCandidatos();
-                  break
+                    fecharModal();
+                    listarCandidatos();
+                    break
+                  }
+
                 }
-                
+                i++
               }
-              i++
-            }
-            if (!checkboxMarcado) {
-              Swal.fire('Selecione ao menos uma habilidade.')
-            }
+              if (!checkboxMarcado) {
+                Swal.fire('Selecione ao menos uma habilidade.')
+              }
 
-          } else {
-            Swal.fire('Sua idade não é permitida.')
+            } else {
+              Swal.fire('Sua idade não é permitida.')
+            }
+          } else{
+            Swal.fire('Digite um email válido.')
           }
+
         } else {
           Swal.fire('Digite seu nome e sobrenome.')
         }
@@ -170,24 +176,29 @@ function salvar() {
             return nomeArray.length >= 2;
           }
           if (validarNome(nome)) {
-            if (idade >= 17 && idade <= 100) {
-              while (i < checkboxs.length) {
-                if (checkboxs[i].checked === true) {
-                  checkboxMarcado = true;
-                  //Envia as informações do candidato para a array de candidatos
-                  candidatos.push(candidato);
-                  fecharModal();
-                  listarCandidatos();
-                  break
+            if (validarEmail(email)) {
+              if (idade >= 17 && idade <= 100) {
+                while (i < checkboxs.length) {
+                  if (checkboxs[i].checked === true) {
+                    checkboxMarcado = true;
+                    //Envia as informações do candidato para a array de candidatos
+                    candidatos.push(candidato);
+                    fecharModal();
+                    listarCandidatos();
+                    break
+                  }
+                  i++
                 }
-                i++
-              }
-              if (!checkboxMarcado) {
-                Swal.fire('Selecione ao menos uma habilidade.')
+                if (!checkboxMarcado) {
+                  Swal.fire('Selecione ao menos uma habilidade.')
+                }
+              } else {
+                Swal.fire('Sua idade não é permitida.')
               }
             } else {
-              Swal.fire('Sua idade não é permitida.')
+              Swal.fire('Digite um e-mail válido.')
             }
+
           } else {
             Swal.fire('Digite seu nome e sobrenome.')
           }
@@ -361,4 +372,9 @@ function checkInputs(inputs) {
     }
   });
   return filled;
+}
+
+const validarEmail = (email) => {
+  const regex = /^[^\s]+@[^\s]+\.[^\s]+$/;
+  return regex.test(email);
 }
